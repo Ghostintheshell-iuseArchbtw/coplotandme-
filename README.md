@@ -1,2 +1,2 @@
 # Copilot Adventures
-just me playing arounf with coplitty
+copilot likes to make tools
