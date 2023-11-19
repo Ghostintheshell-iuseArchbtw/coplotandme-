@@ -1,4 +1,14 @@
-import subprocess
+def execute_attack_script():
+    """
+    Execute the attack script on the decoy honeypots.
+    """
+    for i in range(4):
+        decoy_dir = encrypt_data(f'decoy_honeypot_{i+1}')
+        attack_script = os.path.join(decrypt_data(decoy_dir), 'attack_script.py')
+        try:
+            subprocess.run(['python', attack_script], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred while executing attack script: {e}")
 from cryptography.fernet import Fernet
 import os
 import subprocess
@@ -98,6 +108,7 @@ def view_anti_ids_measures():
             with open(measures_file, 'r') as file:
                 print(f"Anti-IDS measures for decoy honeypot {i+1}:")
                 print(decrypt_data(file.read()))
+
                 print()
         except FileNotFoundError:
             print(f"Measures file not found for decoy honeypot {i+1}")
